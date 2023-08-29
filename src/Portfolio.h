@@ -2,6 +2,7 @@
 #define Portfolio_h
 
 #include <string>
+#include <unordered_map>
 
 class InvalidPurchaseException: public std::exception {
 };
@@ -14,8 +15,7 @@ public:
    unsigned int Shares(const std::string& symbol) const;
 
 private:
-   bool isEmpty_;
-   unsigned int shares_;
+   std::unordered_map<std::string, unsigned int> shares_;
 };
 
 #endif
