@@ -8,10 +8,14 @@ Portfolio::Portfolio()
 }
 
 bool Portfolio::IsEmpty() const { 
-   return isEmpty_; 
+   return shares_ == 0; 
 }
 
 void Portfolio::Purchase(const string& symbol, unsigned int shares) {
+   if (shares == 0) {
+      throw InvalidPurchaseException();
+   }
+   
    isEmpty_ = false;
    shares_ = shares;
 }

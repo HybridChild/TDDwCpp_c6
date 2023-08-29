@@ -3,6 +3,9 @@
 
 #include <string>
 
+class InvalidPurchaseException: public std::exception {
+};
+
 class Portfolio {
 public:
    Portfolio();
