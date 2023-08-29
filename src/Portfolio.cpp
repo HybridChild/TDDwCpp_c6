@@ -15,7 +15,22 @@ void Portfolio::Purchase(const string& symbol, unsigned int shares) {
       throw InvalidPurchaseException();
    }
 
-   shares_.insert(make_pair(symbol, shares));
+   auto it = shares_.find(symbol);
+   if (it == shares_.end()) {
+      shares_.insert(make_pair(symbol, shares));
+   }
+   else {
+      it->second += shares;
+   }
+}
+
+void Portfolio::Sell(const string& symbol, unsigned int shares) {
+   if (shares > Shares(symbol)) {
+      throw InvalidSellException();
+   }
+
+   auto it = shares_.find(symbol);
+   it->second -= shares;
 }
 
 unsigned int Portfolio::Shares(const string& symbol) const {
