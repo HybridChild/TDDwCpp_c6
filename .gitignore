@@ -1,4 +1,7 @@
-*.o
-main
-*.swp
-build
+src/*.o
+src/main
+src/*.swo
+src/*.swp
+out/
+.vscode/
+.DS_Store/
