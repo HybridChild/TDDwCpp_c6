@@ -25,7 +25,12 @@ public:
 
    Portfolio();
    bool IsEmpty() const;
-   void Purchase(const std::string& symbol, unsigned int shares);
+
+   void Purchase(
+      const std::string& symbol,
+      unsigned int shares,
+      const boost::gregorian::date& transactionDate = FIXED_PURCHASE_DATE);
+   
    void Sell(const std::string& symbol, unsigned int shares);
    unsigned int ShareCount(const std::string& symbol) const;
 

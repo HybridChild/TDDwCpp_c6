@@ -2,6 +2,7 @@
 #include "Portfolio.h"
 
 using namespace ::testing;
+using namespace boost::gregorian;
 
 class APortfolio: public Test {
 public:
@@ -61,10 +62,12 @@ TEST_F(APortfolio, ThrowsWhenSellingMoreSharesThanPurchased) {
 }
 
 TEST_F(APortfolio, AnswersThePurchaseRecordForASinglePurchase) {
-   portfolio_.Purchase(SAMSUNG, 5);
-   auto purchases = portfolio_.Purchases(SAMSUNG);
+   date dateOfPurchase(2014, Mar, 17);
 
+   portfolio_.Purchase(SAMSUNG, 5, dateOfPurchase);
+   auto purchases = portfolio_.Purchases(SAMSUNG);
    auto purchase = purchases[0];
+
    ASSERT_THAT(purchase.ShareCount, Eq(5u));
-   ASSERT_THAT(purchase.Date, Eq(Portfolio::FIXED_PURCHASE_DATE));
+   ASSERT_THAT(purchase.Date, Eq(dateOfPurchase));
 }
