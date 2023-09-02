@@ -7,10 +7,12 @@ class APortfolio: public Test {
 public:
    static const std::string IBM;
    static const std::string AAPL;
+   static const std::string SAMSUNG;
    Portfolio portfolio_;
 };
-const std::string APortfolio::IBM = "IBM";
-const std::string APortfolio::AAPL = "AAPL";
+const std::string APortfolio::IBM     = "IBM";
+const std::string APortfolio::AAPL    = "AAPL";
+const std::string APortfolio::SAMSUNG = "SAMSUNG";
 
 TEST_F(APortfolio, IsEmptyWhenCreated) {
    ASSERT_THAT(portfolio_.IsEmpty(), Eq(true));
@@ -56,4 +58,13 @@ TEST_F(APortfolio, ReducesShareCountOfSymbolOnSell) {
 TEST_F(APortfolio, ThrowsWhenSellingMoreSharesThanPurchased) {
    portfolio_.Purchase(IBM, 3);
    ASSERT_THROW(portfolio_.Sell(IBM, 4), InvalidSellException);
+}
+
+TEST_F(APortfolio, AnswersThePurchaseRecordForASinglePurchase) {
+   portfolio_.Purchase(SAMSUNG, 5);
+   auto purchases = portfolio_.Purchases(SAMSUNG);
+
+   auto purchase = purchases[0];
+   ASSERT_THAT(purchase.ShareCount, Eq(5u));
+   ASSERT_THAT(purchase.Date, Eq(Portfolio::FIXED_PURCHASE_DATE));
 }
