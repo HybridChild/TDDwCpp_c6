@@ -23,9 +23,9 @@ void Portfolio::Sell(const string& symbol, unsigned int shareCount, const date& 
 
 void Portfolio::Transact(const string& symbol, int shareChange, const date& transactionDate)
 {
-   if (shareChange == 0) throw ShareCountCannotBeZeroException();
-   holdings_[symbol] = ShareCount(symbol) + shareChange;
-   purchases_.push_back(PurchaseRecord(shareChange, transactionDate));
+   ThrowIfShareCountIsZero(shareChange);
+   UpdateShareCount(symbol, shareChange);
+   AddPurchaseRecord(shareChange, transactionDate);
 }
 
 unsigned int Portfolio::ShareCount(const string& symbol) const {
@@ -37,4 +37,16 @@ unsigned int Portfolio::ShareCount(const string& symbol) const {
 
 vector<PurchaseRecord> Portfolio::Purchases(const string& symbol) const {
    return purchases_;
+}
+
+void Portfolio::ThrowIfShareCountIsZero(int shareCount) const {
+   if (shareCount == 0) throw ShareCountCannotBeZeroException();
+}
+
+void Portfolio::UpdateShareCount(const std::string& symbol, int shareChange) {
+   holdings_[symbol] = ShareCount(symbol) + shareChange;
+}
+
+void Portfolio::AddPurchaseRecord(int shareCount, const boost::gregorian::date& transactionDate) {
+   purchases_.push_back(PurchaseRecord(shareCount, transactionDate));
 }
