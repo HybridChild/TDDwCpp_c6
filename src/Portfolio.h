@@ -7,8 +7,8 @@
 
 #include "boost/date_time/gregorian/gregorian_types.hpp"
 
-class InvalidPurchaseException:  public std::exception {};
-class InvalidSellException:      public std::exception {};
+class ShareCountCannotBeZeroException:  public std::exception {};
+class InsufficientSharesException:      public std::exception {};
 
 struct PurchaseRecord {
    PurchaseRecord(int shareCount, const boost::gregorian::date& date)
@@ -41,6 +41,11 @@ public:
    std::vector<PurchaseRecord> Purchases(const std::string& symbol) const;
 
 private:
+   void Transact(
+      const std::string& symbol,
+      int shareChange,
+      const boost::gregorian::date& transactionDate);
+
    std::unordered_map<std::string, unsigned int> holdings_;
    std::vector<PurchaseRecord> purchases_;
 };

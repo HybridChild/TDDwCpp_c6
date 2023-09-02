@@ -56,7 +56,11 @@ TEST_F(APortfolio, AnswersShareCountForPurchasedSymbol) {
 }
 
 TEST_F(APortfolio, ThrowsOnPurchaseOfZeroShares) {
-   ASSERT_THROW(Purchase(IBM, 0), InvalidPurchaseException);
+   ASSERT_THROW(Purchase(IBM, 0), ShareCountCannotBeZeroException);
+}
+
+TEST_F(APortfolio, ThrowsOnSellOfZeroShares) {
+   ASSERT_THROW(Sell(IBM, 0), ShareCountCannotBeZeroException);
 }
 
 TEST_F(APortfolio, AnswersShareCountForAppropriateSymbol) {
@@ -80,7 +84,7 @@ TEST_F(APortfolio, ReducesShareCountOfSymbolOnSell) {
 
 TEST_F(APortfolio, ThrowsWhenSellingMoreSharesThanPurchased) {
    portfolio_.Purchase(IBM, 3);
-   ASSERT_THROW(Sell(IBM, 4), InvalidSellException);
+   ASSERT_THROW(Sell(IBM, 4), InsufficientSharesException);
 }
 
 TEST_F(APortfolio, AnswersThePurchaseRecordForASinglePurchase) {
