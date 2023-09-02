@@ -21,8 +21,13 @@ TEST_F(APortfolio, IsNotEmptyAfterPurchase) {
    ASSERT_THAT(portfolio_.IsEmpty(), Eq(false));
 }
 
-TEST_F(APortfolio, AnswersZeroForSharesOfUnpurchasedSymbol) {
-   ASSERT_THAT(portfolio_.Shares(AAPL), Eq(0u));
+TEST_F(APortfolio, AnswersZeroForShareCountOfUnpurchasedSymbol) {
+   ASSERT_THAT(portfolio_.ShareCount(AAPL), Eq(0u));
+}
+
+TEST_F(APortfolio, AnswersShareCountForPurchasedSymbol) {
+   portfolio_.Purchase(IBM, 666);
+   ASSERT_THAT(portfolio_.ShareCount(IBM), Eq(666u));
 }
 
 TEST_F(APortfolio, ThrowsOnPurchaseOfZeroShares) {
@@ -32,20 +37,20 @@ TEST_F(APortfolio, ThrowsOnPurchaseOfZeroShares) {
 TEST_F(APortfolio, AnswersShareCountForAppropriateSymbol) {
    portfolio_.Purchase(IBM, 5);
    portfolio_.Purchase(AAPL, 7);
-   ASSERT_THAT(portfolio_.Shares(IBM), Eq(5u));
-   ASSERT_THAT(portfolio_.Shares(AAPL), Eq(7u));
+   ASSERT_THAT(portfolio_.ShareCount(IBM), Eq(5u));
+   ASSERT_THAT(portfolio_.ShareCount(AAPL), Eq(7u));
 }
 
 TEST_F(APortfolio, ShareCountReflectsAccumulatedPurchasesOfSameSymbol) {
    portfolio_.Purchase(IBM, 1);
    portfolio_.Purchase(IBM, 2);
-   ASSERT_THAT(portfolio_.Shares(IBM), Eq(3u));
+   ASSERT_THAT(portfolio_.ShareCount(IBM), Eq(3u));
 }
 
 TEST_F(APortfolio, ReducesShareCountOfSymbolOnSell) {
    portfolio_.Purchase(IBM, 5);
    portfolio_.Sell(IBM, 2);
-   ASSERT_THAT(portfolio_.Shares(IBM), Eq(3u));
+   ASSERT_THAT(portfolio_.ShareCount(IBM), Eq(3u));
 }
 
 TEST_F(APortfolio, ThrowsWhenSellingMoreSharesThanPurchased) {
