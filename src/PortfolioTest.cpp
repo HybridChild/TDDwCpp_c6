@@ -18,11 +18,24 @@ public:
          const date& transactionDate = APortfolio::ArbitraryDate) {
       portfolio_.Purchase(symbol, shareCount, transactionDate);
    }
+
+   void Sell(
+         const std::string& symbol,
+         unsigned int shareCount,
+         const date& transactionDate = APortfolio::ArbitraryDate) {
+      portfolio_.Sell(symbol, shareCount, transactionDate);
+   }
 };
 const std::string APortfolio::IBM     = "IBM";
 const std::string APortfolio::AAPL    = "AAPL";
 const std::string APortfolio::SAMSUNG = "SAMSUNG";
 const date APortfolio::ArbitraryDate  = date(2014, Jan, 1);
+
+void ASSERT_PURCHASE(PurchaseRecord& purchase, int shareCount, const date& date) {
+   ASSERT_THAT(purchase.ShareCount, Eq(shareCount));
+   ASSERT_THAT(purchase.Date, Eq(date));
+}
+
 
 TEST_F(APortfolio, IsEmptyWhenCreated) {
    ASSERT_THAT(portfolio_.IsEmpty(), Eq(true));
@@ -61,22 +74,25 @@ TEST_F(APortfolio, ShareCountReflectsAccumulatedPurchasesOfSameSymbol) {
 
 TEST_F(APortfolio, ReducesShareCountOfSymbolOnSell) {
    Purchase(IBM, 5);
-   portfolio_.Sell(IBM, 2);
+   Sell(IBM, 2);
    ASSERT_THAT(portfolio_.ShareCount(IBM), Eq(3u));
 }
 
 TEST_F(APortfolio, ThrowsWhenSellingMoreSharesThanPurchased) {
    portfolio_.Purchase(IBM, 3);
-   ASSERT_THROW(portfolio_.Sell(IBM, 4), InvalidSellException);
+   ASSERT_THROW(Sell(IBM, 4), InvalidSellException);
 }
 
 TEST_F(APortfolio, AnswersThePurchaseRecordForASinglePurchase) {
-   date dateOfPurchase(2014, Mar, 17);
-
-   Purchase(SAMSUNG, 5, dateOfPurchase);
+   Purchase(SAMSUNG, 5, ArbitraryDate);
    auto purchases = portfolio_.Purchases(SAMSUNG);
-   auto purchase = purchases[0];
+   ASSERT_PURCHASE(purchases[0], 5, ArbitraryDate);
+}
 
-   ASSERT_THAT(purchase.ShareCount, Eq(5u));
-   ASSERT_THAT(purchase.Date, Eq(dateOfPurchase));
+TEST_F(APortfolio, IncludesSalesInPurchaseRecords) {
+   Purchase(SAMSUNG, 10);
+   Sell(SAMSUNG, 5, ArbitraryDate);
+
+   auto sales = portfolio_.Purchases(SAMSUNG);
+   ASSERT_PURCHASE(sales[1], -5, ArbitraryDate);
 }

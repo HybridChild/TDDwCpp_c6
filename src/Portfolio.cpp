@@ -15,13 +15,13 @@ bool Portfolio::IsEmpty() const {
 void Portfolio::Purchase(const string& symbol, unsigned int shareCount, const date& transactionDate) {
    if (shareCount == 0) throw InvalidPurchaseException();
    holdings_[symbol] = shareCount + ShareCount(symbol);
-
    purchases_.push_back(PurchaseRecord(shareCount, transactionDate));
 }
 
-void Portfolio::Sell(const string& symbol, unsigned int shareCount) {
+void Portfolio::Sell(const string& symbol, unsigned int shareCount, const date& transactionDate) {
    if (shareCount > ShareCount(symbol)) throw InvalidSellException();
    holdings_[symbol] = ShareCount(symbol) - shareCount;
+   purchases_.push_back(PurchaseRecord(-shareCount, transactionDate));
 }
 
 unsigned int Portfolio::ShareCount(const string& symbol) const {
