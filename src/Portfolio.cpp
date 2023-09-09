@@ -1,4 +1,5 @@
 #include "Portfolio.h"
+#include <numeric>
 
 using namespace std;
 using namespace boost::gregorian;
@@ -9,7 +10,7 @@ Portfolio::Portfolio() {
 }
 
 bool Portfolio::IsEmpty() const { 
-   return holdings_.size() == 0; 
+   return purchaseRecords_.size() == 0; 
 }
 
 void Portfolio::Purchase(const string& symbol, unsigned int shareCount, const date& transactionDate) {
@@ -24,20 +25,20 @@ void Portfolio::Sell(const string& symbol, unsigned int shareCount, const date& 
 void Portfolio::Transact(const string& symbol, int shareChange, const date& transactionDate)
 {
    ThrowIfShareCountIsZero(shareChange);
-   UpdateShareCount(symbol, shareChange);
    AddPurchaseRecord(symbol, shareChange, transactionDate);
 }
 
 unsigned int Portfolio::ShareCount(const string& symbol) const {
-   return Find<unsigned int>(holdings_, symbol);
+   auto records = Find<vector<PurchaseRecord>>(purchaseRecords_, symbol);
+   
+   return accumulate(records.begin(), records.end(), 0,
+      [] (int total, PurchaseRecord record) {
+         return total + record.ShareCount;
+      });
 }
 
 void Portfolio::ThrowIfShareCountIsZero(int shareCount) const {
    if (shareCount == 0) throw ShareCountCannotBeZeroException();
-}
-
-void Portfolio::UpdateShareCount(const std::string& symbol, int shareChange) {
-   holdings_[symbol] = ShareCount(symbol) + shareChange;
 }
 
 void Portfolio::AddPurchaseRecord(const std::string& symbol, int shareCount, const boost::gregorian::date& transactionDate) {
