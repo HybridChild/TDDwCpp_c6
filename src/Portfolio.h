@@ -6,6 +6,8 @@
 #include <vector>
 
 #include "boost/date_time/gregorian/gregorian_types.hpp"
+#include "PurchaseRecord.h"
+#include "Holding.h"
 
 template<typename T>
 T Find(std::unordered_map<std::string, T> map, const std::string& key) {
@@ -15,15 +17,6 @@ T Find(std::unordered_map<std::string, T> map, const std::string& key) {
 
 class ShareCountCannotBeZeroException:  public std::exception {};
 class InsufficientSharesException:      public std::exception {};
-
-struct PurchaseRecord {
-   PurchaseRecord(int shareCount, const boost::gregorian::date& date)
-      : ShareCount(shareCount), Date(date)
-   {}
-
-   int ShareCount;
-   boost::gregorian::date Date;
-};
 
 class Portfolio {
 public:
@@ -57,7 +50,7 @@ private:
    void AddPurchaseRecord(const std::string& symbol, int shareCount, const boost::gregorian::date& transactionDate);
    bool ContainsSymbol(const std::string& symbol) const;
    void Add(const std::string& symbol, PurchaseRecord&& record);
-   std::unordered_map<std::string, std::vector<PurchaseRecord>> purchaseRecords_;
+   std::unordered_map<std::string, Holding> holdings_;
 };
 
 #endif
