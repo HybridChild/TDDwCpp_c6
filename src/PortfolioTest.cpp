@@ -100,3 +100,15 @@ TEST_F(APortfolio, IncludesSalesInPurchaseRecords) {
    auto sales = portfolio_.Purchases(SAMSUNG);
    ASSERT_PURCHASE(sales[1], -5, ArbitraryDate);
 }
+
+bool operator==(const PurchaseRecord& lhs, const PurchaseRecord& rhs) {
+   return lhs.ShareCount == rhs.ShareCount && lhs.Date == rhs.Date;
+}
+
+TEST_F(APortfolio, SeparatesPurchaseRecordsBySymbol) {
+   Purchase(IBM, 2, ArbitraryDate);
+   Purchase(SAMSUNG, 5, ArbitraryDate);
+
+   auto sales = portfolio_.Purchases(SAMSUNG);
+   ASSERT_THAT(sales, ElementsAre(PurchaseRecord(5, ArbitraryDate)));
+}
