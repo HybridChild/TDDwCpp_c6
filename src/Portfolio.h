@@ -7,6 +7,12 @@
 
 #include "boost/date_time/gregorian/gregorian_types.hpp"
 
+template<typename T>
+T Find(std::unordered_map<std::string, T> map, const std::string& key) {
+   auto it = map.find(key);
+   return it == map.end() ? T{} : it->second;
+}
+
 class ShareCountCannotBeZeroException:  public std::exception {};
 class InsufficientSharesException:      public std::exception {};
 
@@ -48,7 +54,10 @@ private:
    
    void ThrowIfShareCountIsZero(int shareCount) const;
    void UpdateShareCount(const std::string& symbol, int shareChange);
+   void InitializePurchaseRecords(const std::string& symbol);
    void AddPurchaseRecord(const std::string& symbol, int shareCount, const boost::gregorian::date& transactionDate);
+   bool ContainsSymbol(const std::string& symbol) const;
+   void Add(const std::string& symbol, PurchaseRecord&& record);
    std::unordered_map<std::string, unsigned int> holdings_;
    std::unordered_map<std::string, std::vector<PurchaseRecord>> purchaseRecords_;
 };
